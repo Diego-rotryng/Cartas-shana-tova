@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shaná Tová Hub — Bendiciones Interactivas ✨</title>
+  <meta name="description" content="Mandá un deseo de Shaná Tová, recibí otro al azar y mirá el muro moderado. Generador de cartitas imprimibles, actividad para colorear y compartibles por WhatsApp."/>
+  <meta property="og:title" content="Shaná Tová Hub — Bendiciones ✨"/>
+  <meta property="og:description" content="Mandá un deseo y recibí otro. Imprimí cartitas, coloreá y compartí por WhatsApp."/>
+  <meta property="og:type" content="website"/>
+  <meta name="theme-color" content="#fef3c7">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --amber:#f59e0b; --choco:#78350f; }
+    .twinkle{ position:absolute; pointer-events:none; opacity:.85; animation:float 12s linear infinite; }
+    @keyframes float{ 0%{ transform:translateY(0) rotate(0) } 100%{ transform:translateY(-120vh) rotate(360deg) } }
+    .glass{ backdrop-filter:saturate(140%) blur(10px); background:rgba(255,255,255,.75) }
+    .tag{ font-size:.72rem; padding:.2rem .55rem; border-radius:999px; border:1px solid var(--amber); color:#92400e }
+    .btn{ @apply inline-flex items-center justify-center px-5 py-3 rounded-2xl font-semibold transition; }
+    .btn-primary{ @apply text-white; background:#d97706; }
+    .btn-primary:hover{ background:#b45309 }
+    .btn-outline{ @apply border; border-color:#d97706; color:#92400e }
+    .btn-outline:hover{ background:#fff7ed }
+    .badge{ @apply text-xs px-2 py-0.5 rounded-full border; border-color:#d6d3d1; color:#57534e }
+    .pill{ @apply px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs }
+    @media print { .no-print{display:none !important} body{background:white} }
+  </style>
+</head>
+<body class="min-h-screen bg-amber-50 text-stone-800 relative overflow-x-hidden">
+  <div id="stars"></div>
+
+  <header class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">🍯</span>
+      <p class="font-semibold">Shaná Tová Hub</p>
+      <span class="tag ml-2">v3 · Moderado</span>
+    </div>
+    <nav class="hidden md:flex gap-6 text-sm no-print">
+      <a href="#deseo" class="hover:underline">Mandar</a>
+      <a href="#muro" class="hover:underline">Muro</a>
+      <a href="#actividad" class="hover:underline">Colorear</a>
+      <a href="#cartitas" class="hover:underline">Cartitas</a>
+      <a href="#admin" class="hover:underline">Admin</a>
+    </nav>
+  </header>
+
+  <section class="max-w-7xl mx-auto px-4 pb-8 pt-4 md:pt-10">
+    <div class="rounded-3xl p-6 md:p-10 glass shadow-xl">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">¡Shaná Tová Umetuká! <span class="inline-block">🍎✨</span></h1>
+          <p class="mt-3 text-lg md:text-xl">Compartí tu bendición y <b>recibí una de regalo</b>. Elegí si querés que quede en el <b>muro público</b>.</p>
+          <ul class="mt-4 text-sm text-stone-600 space-y-1">
+            <li>• Muro <span class="badge">moderado</span> · Privacidad cuidada</li>
+            <li>• Cartitas imprimibles <span class="badge">A4</span> (4 por hoja)</li>
+            <li>• Actividad para colorear <span class="badge">SVG</span></li>
+          </ul>
+          <div class="mt-6 flex flex-wrap gap-3 no-print">
+            <a href="#deseo" class="btn btn-primary">Mandar un deseo</a>
+            <a href="#muro" class="btn btn-outline">Ver muro</a>
+            <button id="shareBtn" class="btn btn-outline">Compartir</button>
+          </div>
+          <div class="mt-4 text-sm text-stone-500">Deseos publicados: <span id="statCount" class="pill">0</span></div>
+        </div>
+        <div class="relative">
+          <svg viewBox="0 0 320 220" class="w-full h-auto">
+            <g fill="none" stroke="#78350f" stroke-width="2.2">
+              <circle cx="85" cy="115" r="40"/>
+              <path d="M85 75 C90 58 108 52 120 54"/>
+              <rect x="81" y="58" width="9" height="16" rx="2"/>
+              <rect x="170" y="80" width="100" height="90" rx="14"/>
+              <path d="M170 100 h100"/>
+              <path d="M170 120 h100"/>
+              <path d="M170 140 h100"/>
+              <polygon points="295,45 305,70 332,70 309,88 316,114 295,100 274,114 281,88 258,70 285,70"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="deseo" class="max-w-7xl mx-auto px-4 py-10">
+    <div class="rounded-3xl p-6 md:p-10 bg-white shadow-xl border border-amber-100">
+      <h2 class="text-2xl md:text-3xl font-bold">Mandá tu deseo ✍️</h2>
+      <p class="mt-2 text-stone-600">Escribí un deseo corto (máx. 200 caracteres). Al enviarlo, <b>recibís uno al azar</b> de otra persona.</p>
+
+      <form id="wishForm" class="mt-6 grid gap-4">
+        <div class="grid md:grid-cols-2 gap-4">
+          <input id="wishName" maxlength="40" placeholder="Tu nombre (opcional)" class="w-full rounded-2xl border border-stone-300 p-4 focus:outline-none focus:ring-2 focus:ring-amber-500"/>
+          <input id="wishEmail" type="email" placeholder="Tu email (opcional)" class="w-full rounded-2xl border border-stone-300 p-4 focus:outline-none focus:ring-2 focus:ring-amber-500"/>
+        </div>
+        <textarea id="wishText" maxlength="200" required placeholder="Mi deseo es…" class="w-full rounded-2xl border border-stone-300 p-4 focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+        <label class="flex items-start gap-3 text-sm text-stone-600">
+          <input id="publishConsent" type="checkbox" class="mt-1"> Quiero que mi deseo sea <b>público</b> en el muro (puede mostrarse anónimo).
+        </label>
+        <div class="flex flex-wrap items-center justify-between gap-4 no-print">
+          <button class="btn btn-primary" type="submit">Enviar y recibir un deseo</button>
+          <div class="flex items-center gap-2 text-sm"><button type="button" id="suggestBtn" class="badge">¿Sin ideas? Sugerir</button><span id="suggestText" class="text-stone-500"></span></div>
+        </div>
+        <p class="text-xs text-stone-500">Privacidad: solo se publica si lo marcás. Podés pedir baja a contacto@tu-dominio.com</p>
+      </form>
+
+      <dialog id="thanksDialog" class="rounded-2xl p-0 overflow-hidden w-11/12 md:w-2/3">
+        <div class="bg-white p-6 md:p-8">
+          <h3 class="text-xl md:text-2xl font-bold">Recibiste un deseo 🎁</h3>
+          <p id="randomWish" class="mt-3 text-lg"></p>
+          <div class="mt-4 text-sm text-stone-600" id="wishPermalinkCtn" style="display:none"></div>
+          <div class="mt-6 flex flex-wrap justify-end gap-3">
+            <button class="px-4 py-2 rounded-xl border" onclick="document.getElementById('thanksDialog').close()">Cerrar</button>
+            <a id="whShare" target="_blank" class="px-4 py-2 rounded-xl bg-amber-600 text-white">Compartir por WhatsApp</a>
+          </div>
+        </div>
+      </dialog>
+    </div>
+  </section>
+
+  <section id="muro" class="max-w-7xl mx-auto px-4 pb-10">
+    <div class="flex items-end justify-between gap-4 mb-2">
+      <h2 class="text-2xl md:text-3xl font-bold">Muro de deseos ✨</h2>
+      <div class="text-sm text-stone-500">Solo se muestran deseos <b>aprobados</b>.</div>
+    </div>
+    <div class="mb-4 flex gap-2 no-print">
+      <input id="filter" class="rounded-xl border px-3 py-2 text-sm" placeholder="Filtrar por palabra…"/>
+      <button id="clearFilter" class="badge">Limpiar</button>
+    </div>
+    <div id="wall" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    <div class="mt-4 flex justify-center gap-2 no-print">
+      <button id="prevPage" class="badge">◀︎</button>
+      <span id="pageInfo" class="text-sm text-stone-500"></span>
+      <button id="nextPage" class="badge">▶︎</button>
+    </div>
+  </section>
+
+  <section id="actividad" class="max-w-7xl mx-auto px-4 pb-12">
+    <div class="rounded-3xl p-6 md:p-10 bg-white shadow-xl border border-amber-100">
+      <h2 class="text-2xl md:text-3xl font-bold">Coloreá una manzana y una estrella 🎨</h2>
+      <p class="mt-2 text-stone-600">Tocá para ir cambiando el color. Guardá captura si te gusta.</p>
+      <div class="mt-6 flex flex-col md:flex-row gap-8 items-start">
+        <svg id="apple" viewBox="0 0 120 120" class="w-48 h-48 border rounded-2xl p-4">
+          <circle cx="60" cy="70" r="35" stroke="#000" fill="transparent" stroke-width="3"/>
+          <rect x="56" y="28" width="8" height="14" rx="2" stroke="#000" fill="transparent" stroke-width="3"/>
+          <path d="M60 28 C66 18 78 16 84 18" stroke="#000" fill="transparent" stroke-width="3"/>
+        </svg>
+        <svg id="star" viewBox="0 0 120 120" class="w-48 h-48 border rounded-2xl p-4">
+          <polygon points="60,10 72,42 106,42 78,62 88,94 60,76 32,94 42,62 14,42 48,42" stroke="#000" fill="transparent" stroke-width="3"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section id="cartitas" class="max-w-7xl mx-auto px-4 pb-20 no-print">
+    <div class="rounded-3xl p-6 md:p-10 bg-white shadow-xl border border-amber-100">
+      <h2 class="text-2xl md:text-3xl font-bold">Cartitas imprimibles A4 🖨️</h2>
+      <p class="mt-2 text-stone-600">Generá cartitas 4 por hoja, con marco B/N y espacio de firma.</p>
+      <div class="mt-4 grid md:grid-cols-4 gap-3 text-sm">
+        <input id="cardName" class="rounded-xl border px-3 py-2" placeholder="Firma (nombre de tu nena)"/>
+        <input id="cardCount" type="number" class="rounded-xl border px-3 py-2" placeholder="Cantidad (ej. 32)"/>
+        <select id="cardStyle" class="rounded-xl border px-3 py-2"><option value="bn">Blanco y negro</option><option value="bn_star">B/N + Estrellas</option></select>
+        <button id="makeCards" class="btn btn-primary">Generar e imprimir</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="admin" class="max-w-7xl mx-auto px-4 pb-24 no-print">
+    <div class="rounded-3xl p-6 md:p-10 bg-white shadow-xl border border-amber-100">
+      <h2 class="text-2xl md:text-3xl font-bold">Panel Admin (MVP)</h2>
+      <p class="mt-2 text-stone-600">Protección básica con PIN. Para producción: migrar a Firebase con Rules.</p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <input id="adminPin" class="rounded-xl border p-2" placeholder="Ingresá PIN"/>
+        <button id="enterAdmin" class="px-4 py-2 rounded-xl bg-stone-800 text-white">Entrar</button>
+        <button id="approveAll" class="px-4 py-2 rounded-xl border">Aprobar todo</button>
+        <button id="exportCsv" class="px-4 py-2 rounded-xl border">Exportar CSV</button>
+        <button id="clearAll" class="px-4 py-2 rounded-xl border">Borrar TODO (local)</button>
+      </div>
+      <div id="adminArea" class="mt-6 hidden">
+        <h3 class="font-semibold mb-2">Pendientes de aprobación</h3>
+        <div id="pendingList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-amber-100 py-10">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-stone-500">Hecho con cariño 🍯 por Einstech & Friends — Feliz 5786 ✨</p>
+      <a href="#deseo" class="px-4 py-2 rounded-xl bg-amber-600 text-white no-print">Mandar un deseo</a>
+    </div>
+  </footer>
+
+  <script>
+    // =========================
+    // CONFIG
+    // =========================
+    window.CONFIG = {
+      MODE: 'email',            // 'email' | 'firebase' (demo: email)
+      EMAIL_TO: 'YOUR_EMAIL',   // ej: 'diegorot@...' (FormSubmit)
+      ADMIN_PIN: '5786',
+      PAGE_SIZE: 9,             // deseos por página en el muro
+      FIREBASE: {               // completar si usás 'firebase'
+        apiKey: 'YOUR_KEY', authDomain:'YOUR_DOMAIN.firebaseapp.com', projectId:'YOUR_PROJECT_ID', storageBucket:'YOUR_BUCKET', messagingSenderId:'YOUR_SENDER', appId:'YOUR_APP_ID'
+      }
+    }
+
+    // Estrellas decorativas
+    const starsCtn = document.getElementById('stars');
+    const STAR_COUNT = 26; for (let i=0;i<STAR_COUNT;i++){ const s=document.createElement('div'); s.className='twinkle'; s.textContent='✦'; s.style.left=(Math.random()*100)+'vw'; s.style.bottom='-10vh'; s.style.fontSize=(12+Math.random()*16)+'px'; s.style.animationDelay=(Math.random()*10)+'s'; starsCtn.appendChild(s) }
+
+    // Local state (demo sin backend)
+    const LS = { P:'wish_pending', A:'wish_approved' };
+    const getLS = k => JSON.parse(localStorage.getItem(k)||'[]');
+    const setLS = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+
+    // Semilla si vacío
+    if(!getLS(LS.A).length){ setLS(LS.A,[
+      {id:uid(),texto:'Que sea un año dulce como la miel',nombre:'',anon:true},
+      {id:uid(),texto:'Más juegos con amigos y cero bullying',nombre:'',anon:true},
+      {id:uid(),texto:'Salud y abrazos para todos',nombre:'',anon:true}
+    ])}
+
+    // Estadística
+    const statCount = document.getElementById('statCount');
+
+    // Muro con paginación + filtro
+    const wall = document.getElementById('wall');
+    const filter = document.getElementById('filter');
+    const clearFilter = document.getElementById('clearFilter');
+    let page = 1; const pageInfo = document.getElementById('pageInfo');
+    function viewApproved(){
+      const q = (filter.value||'').trim().toLowerCase();
+      const list = getLS(LS.A).filter(w => !q || w.texto.toLowerCase().includes(q));
+      statCount.textContent = list.length;
+      const total = Math.max(1, Math.ceil(list.length / window.CONFIG.PAGE_SIZE));
+      if(page>total) page=total;
+      const start = (page-1)*window.CONFIG.PAGE_SIZE;
+      const paged = list.slice(start, start+window.CONFIG.PAGE_SIZE);
+      wall.innerHTML=''; paged.forEach(w => wall.appendChild(cardWish(w)));
+      pageInfo.textContent = `Página ${page} / ${total}`;
+    }
+    function cardWish(w){
+      const el = document.createElement('article');
+      el.className='rounded-2xl p-4 bg-white border border-amber-100 shadow hover:shadow-md transition';
+      const by = w.nombre? `<div class="text-xs text-stone-500 mt-1">por ${escapeHtml(w.nombre)}${w.anon?' (anónimo)':''}</div>`:'';
+      el.innerHTML = `<div class='text-amber-700 text-xl'>🍎⭐</div><p class='mt-2'>${escapeHtml(w.texto)}</p>${by}`;
+      return el;
+    }
+    document.getElementById('prevPage').onclick = ()=>{ if(page>1){ page--; viewApproved() } };
+    document.getElementById('nextPage').onclick = ()=>{ page++; viewApproved() };
+    filter.addEventListener('input', ()=>{ page=1; viewApproved() });
+    clearFilter.onclick = ()=>{ filter.value=''; page=1; viewApproved() };
+    viewApproved();
+
+    // Compartir
+    document.getElementById('shareBtn').addEventListener('click', async ()=>{
+      const data={title:'Shaná Tová Hub', text:'Te regalo un deseo ✨', url:location.href};
+      if(navigator.share){ try{ await navigator.share(data) }catch(e){} }
+      else{ window.open('https://wa.me/?text='+encodeURIComponent('Te regalo un deseo ✨ '+location.href),'_blank') }
+    });
+
+    // Sugeridor de deseos (anti-bloqueo creativo)
+    const seeds=[
+      'Aprender algo nuevo con alegría', 'Salud para toda la familia', 'Más juegos y menos pantallas', 'Amistades que sumen', 'Paz y empatía en la escuela', 'Viajes y buenos recuerdos', 'Cocinar jalá riquísima', 'Deporte sin peleas', 'Creatividad a full', 'Abrazos y risas largas'
+    ];
+    document.getElementById('suggestBtn').onclick = ()=>{
+      const t = seeds[Math.floor(Math.random()*seeds.length)];
+      document.getElementById('suggestText').textContent = 'Ejemplo: “'+t+'”';
+    };
+
+    // Submit deseo: validación + moderación + email opcional + regalo
+    const form = document.getElementById('wishForm');
+    const dialog = document.getElementById('thanksDialog');
+    const randomWishEl = document.getElementById('randomWish');
+    const wishPermalinkCtn = document.getElementById('wishPermalinkCtn');
+    const whShare = document.getElementById('whShare');
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const texto = (document.getElementById('wishText').value||'').trim();
+      const nombre = (document.getElementById('wishName').value||'').trim();
+      const email  = (document.getElementById('wishEmail').value||'').trim();
+      const publicable = document.getElementById('publishConsent').checked;
+      if(!texto) return;
+
+      // Anti-spam: 1 cada 20s + filtros simples
+      const last=Number(localStorage.getItem('last_submit')||0); if(Date.now()-last<20000){ alert('Esperá unos segundos 🙏'); return } localStorage.setItem('last_submit', Date.now());
+      if(texto.length<6){ alert('Escribí un deseo un poquito más largo 🙂'); return }
+      if(/https?:\/\//i.test(texto)){ alert('Sin links, por favor 🙏'); return }
+
+      const wish = { id:uid(), texto:limpia(texto), nombre:limpia(nombre), email:limpia(email), anon:!nombre, publicable, ts:Date.now() };
+
+      // Duplicados básicos por hash de texto
+      const all = [...getLS(LS.P), ...getLS(LS.A)];
+      const exists = all.some(w=> hash(w.texto)===hash(wish.texto));
+      if(exists){ alert('Ese deseo ya existe muy parecido. Probá con otra frase 💡'); return }
+
+      // Cola local
+      if(publicable){ const p=getLS(LS.P); p.unshift(wish); setLS(LS.P,p) }
+
+      // Email vía FormSubmit (si configurado)
+      if(window.CONFIG.MODE==='email' && window.CONFIG.EMAIL_TO && window.CONFIG.EMAIL_TO!=='YOUR_EMAIL'){
+        const fd=new FormData();
+        fd.append('_captcha','false'); fd.append('_template','box'); fd.append('_subject','Nuevo deseo – Shaná Tová Hub');
+        fd.append('nombre', nombre); fd.append('email', email); fd.append('deseo', texto); fd.append('publicable', publicable? 'sí':'no');
+        try{ await fetch('https://formsubmit.co/'+encodeURIComponent(window.CONFIG.EMAIL_TO), { method:'POST', body:fd }) }catch(e){}
+      }
+
+      // Regalo inmediato
+      const approved=getLS(LS.A); const r=approved[Math.floor(Math.random()*approved.length)];
+      randomWishEl.textContent='“'+(r? r.texto : '¡Feliz año!')+'”';
+      const permalink = location.origin + location.pathname + '#wish-' + wish.id;
+      wishPermalinkCtn.style.display='block';
+      wishPermalinkCtn.innerHTML = `<span class='text-stone-500'>Enlace a tu deseo: </span><code class='text-xs'>${permalink}</code>`;
+      whShare.href='https://wa.me/?text='+encodeURIComponent('Te regalo un deseo ✨ “'+(r? r.texto:'¡Feliz año!')+'” '+location.href);
+      dialog.showModal(); form.reset();
+    });
+
+    // Admin
+    const enterBtn=document.getElementById('enterAdmin');
+    const adminArea=document.getElementById('adminArea');
+    const pendingList=document.getElementById('pendingList');
+    document.getElementById('approveAll').onclick=()=>{ if(!pinOk()) return; let pend=getLS(LS.P); const ap=getLS(LS.A); ap.unshift(...pend.map(w=>({id:w.id,texto:w.texto,nombre:w.nombre,anon:w.anon}))); setLS(LS.A,ap); setLS(LS.P,[]); renderPending(); viewApproved(); };
+    enterBtn.addEventListener('click', ()=>{ if(pinOk()){ adminArea.classList.remove('hidden'); renderPending() } });
+    function pinOk(){ const pin=(document.getElementById('adminPin').value||'').trim(); if(pin===window.CONFIG.ADMIN_PIN) return true; alert('PIN incorrecto'); return false }
+
+    function renderPending(){
+      const pend=getLS(LS.P); pendingList.innerHTML='';
+      if(!pend.length){ pendingList.innerHTML='<p class="text-stone-500">No hay pendientes.</p>'; return }
+      pend.forEach(w=>{
+        const box=document.createElement('div'); box.className='rounded-xl border p-3 flex flex-col gap-2';
+        box.innerHTML=`<p class='font-medium'>${escapeHtml(w.texto)}</p>
+          <div class='text-xs text-stone-500'>${w.nombre? 'de '+escapeHtml(w.nombre):'anónimo'}</div>
+          <div class='flex gap-2'>
+            <button class='px-3 py-1 rounded-lg bg-emerald-600 text-white' data-act='approve' data-id='${w.id}'>Aprobar</button>
+            <button class='px-3 py-1 rounded-lg bg-rose-600 text-white' data-act='reject' data-id='${w.id}'>Rechazar</button>
+          </div>`;
+        pendingList.appendChild(box);
+      });
+      pendingList.querySelectorAll('button').forEach(b=> b.addEventListener('click', ev=>{
+        const id = ev.target.getAttribute('data-id'); const act=ev.target.getAttribute('data-act');
+        const pend=getLS(LS.P); const idx=pend.findIndex(x=>x.id===id);
+        if(idx>-1){ const w=pend.splice(idx,1)[0]; setLS(LS.P,pend); if(act==='approve'){ const ap=getLS(LS.A); ap.unshift({id:w.id,texto:w.texto,nombre:w.nombre,anon:w.anon}); setLS(LS.A,ap); viewApproved() } renderPending() }
+      }))
+    }
+
+    document.getElementById('exportCsv').onclick=()=>{
+      const rows=[[ 'id','texto','nombre','anon','ts' ]];
+      const all=[...getLS(LS.P), ...getLS(LS.A)];
+      all.forEach(w=> rows.push([w.id, w.texto, w.nombre||'', String(w.anon), new Date(w.ts||Date.now()).toISOString()]));
+      const csv=rows.map(r=> r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('
+');
+      const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='deseos.csv'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('clearAll').onclick=()=>{ if(confirm('¿Borrar almacenamiento local?')){ localStorage.removeItem(LS.P); localStorage.removeItem(LS.A); location.reload() } }
+
+    // Colorear SVGs
+    const palette=['transparent','#fde68a','#fca5a5','#a7f3d0','#bfdbfe','#f5d0fe'];
+    const cycleFill=el=>{ const cur=el.getAttribute('fill')||'transparent'; const idx=(palette.indexOf(cur)+1)%palette.length; el.setAttribute('fill', palette[idx]) };
+    document.querySelectorAll('#apple *').forEach(n=> n.addEventListener('click', ()=>cycleFill(n)));
+    document.querySelectorAll('#star *').forEach(n=> n.addEventListener('click', ()=>cycleFill(n)));
+
+    // Generador de cartitas imprimibles (4 por hoja, crop-friendly)
+    document.getElementById('makeCards').onclick=()=>{
+      const name=(document.getElementById('cardName').value||'Con cariño').trim();
+      let count=parseInt(document.getElementById('cardCount').value||'32',10); if(!count||count<4) count=4;
+      const style=(document.getElementById('cardStyle').value||'bn');
+      const w=window.open('','_blank');
+      w.document.write(`<!DOCTYPE html><html><head><meta charset='utf-8'><title>Cartitas</title>
+      <style>@page{size:A4;margin:10mm} body{font-family:Arial,Helvetica,sans-serif;margin:0}
+      .grid{display:grid;grid-template-columns:1fr 1fr;grid-gap:10mm;padding:10mm}
+      .card{border:1px solid #000;border-radius:8px;height:120mm;display:flex;flex-direction:column;justify-content:space-between;padding:10mm}
+      .ttl{font-weight:700;font-size:18px;text-align:center}
+      .txt{font-size:14px}
+      .sig{margin-top:6mm}
+      .row{display:flex;gap:8mm}
+      svg{width:80px;height:80px}
+      .marks{position:fixed;inset:0;pointer-events:none}
+      .mark{position:absolute;width:0;height:0;border:0;}
+      .corner{width:12mm;height:12mm;border-top:1px solid #000;border-left:1px solid #000}
+      .corner.r{right:0;left:auto;border-left:none;border-right:1px solid #000}
+      .corner.b{bottom:0;top:auto;border-top:none;border-bottom:1px solid #000}
+      </style></head><body><div class='grid'></div>
+      <div class='marks'><div class='corner' style='top:10mm;left:10mm'></div><div class='corner r' style='top:10mm;right:10mm'></div><div class='corner b' style='bottom:10mm;left:10mm'></div><div class='corner r b' style='bottom:10mm;right:10mm'></div></div>
+      </body></html>`);
+      const grid=w.document.querySelector('.grid');
+      const cardHTML=(i)=>`<div class='card'>
+        <div class='ttl'>Cartizai Brajá ✨</div>
+        <div class='txt'>¡Shaná Tová Umetuká!<br/>Que este año nuevo esté lleno de juegos, amigos y sonrisas.</div>
+        <div class='row'>${svgApple(style)}${svgStar(style)}</div>
+        <div class='txt'>Escribí un deseo:</div>
+        <div style='border-bottom:1px solid #000;height:0'></div>
+        <div class='sig'>${escapeHtml(name)}, _____________________</div>
+      </div>`;
+      for(let i=0;i<count;i++) grid.insertAdjacentHTML('beforeend', cardHTML(i+1));
+      w.document.close(); w.focus(); w.print();
+    }
+
+    function svgApple(style){
+      const deco = style==='bn_star' ? "<circle cx='15' cy='15' r='2' fill='black'/>" : '';
+      return `<svg viewBox='0 0 120 120'><circle cx='60' cy='70' r='35' stroke='#000' fill='transparent' stroke-width='3'/>${deco}<rect x='56' y='28' width='8' height='14' rx='2' stroke='#000' fill='transparent' stroke-width='3'/><path d='M60 28 C66 18 78 16 84 18' stroke='#000' fill='transparent' stroke-width='3'/></svg>`
+    }
+    function svgStar(style){
+      const deco = style==='bn_star' ? "<circle cx='100' cy='18' r='2' fill='black'/>" : '';
+      return `<svg viewBox='0 0 120 120'><polygon points='60,10 72,42 106,42 78,62 88,94 60,76 32,94 42,62 14,42 48,42' stroke='#000' fill='transparent' stroke-width='3'/>${deco}</svg>`
+    }
+
+    // Utils
+    function uid(){ return Math.random().toString(36).slice(2)+Date.now().toString(36) }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])) }
+    function limpia(s){ return String(s||'').replace(/[
+	]+/g,' ').trim() }
+    function hash(s){ let h=0; for(let i=0;i<s.length;i++){ h=((h<<5)-h)+s.charCodeAt(i); h|=0 } return h }
+  </script>
+</body>
+</html>
